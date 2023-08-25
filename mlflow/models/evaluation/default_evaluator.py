@@ -1342,7 +1342,18 @@ class DefaultEvaluator(ModelEvaluator):
                     self._evaluate_text()
 
                 if self.custom_metrics or self.custom_artifacts:
-                    eval_df = pd.DataFrame({"prediction": copy.deepcopy(self.y_pred)})
+                    if (
+                        self.model_type in (_ModelType.CLASSIFIER, _ModelType.REGRESSOR)
+                        or "output" not in self.y_pred
+                    ):
+                        eval_df = pd.DataFrame({"prediction": copy.deepcopy(self.y_pred)})
+                    else:
+                        eval_df = pd.DataFrame(
+                            {
+                                "prediction": copy.deepcopy(self.y_pred["output"]),
+                                "input": self.X.get_original().to_dict(orient="records"),
+                            }
+                        )
                     if self.dataset.has_targets:
                         eval_df["target"] = self.y
                     self._evaluate_custom_metrics(eval_df)
