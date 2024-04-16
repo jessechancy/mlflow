@@ -108,6 +108,8 @@ class AsyncLoggingQueue:
 
         def logging_func(run_batch):
             try:
+                print(f"Run_id: {run_batch.run_id}, metrics: {len(run_batch.metrics)}, params: {len(run_batch.params)}, tags: {len(run_batch.tags)}")
+
                 self._logging_func(
                     run_id=run_batch.run_id,
                     metrics=run_batch.metrics,
