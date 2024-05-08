@@ -159,6 +159,8 @@ def _extract_predict_fn(model, raw_model):
         except ImportError:
             pass
 
+    predict_fn("random text")  # Ensure predict_fn is callable
+
     return predict_fn, predict_proba_fn
 
 
