@@ -2118,7 +2118,7 @@ def evaluate(
                 feature_names=feature_names,
                 predictions=predictions,
             )
-        predictions_expected_in_model_output = predictions if model is not None else None
+        predictions_expected_in_model_output = predictions if model is None else None
 
         try:
             evaluate_result = _evaluate(

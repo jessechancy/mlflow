@@ -85,6 +85,7 @@ def patched_inference(func_name, original, self, *args, **kwargs):
             "outside this range."
         )
 
+    print("PATCHED", func_name)
     # Inject MLflow tracer into the model
     # TODO: the legacy LangChain callback is removed as its functionality largely
     #  overlaps with the tracer while increasing the latency due to synchronous
