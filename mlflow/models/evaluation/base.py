@@ -2049,6 +2049,8 @@ def evaluate(
         
         model.predict = monkey_patch_predict
 
+    model.predict("test predict function is working for tracing")
+
     if validation_thresholds:
         try:
             assert type(validation_thresholds) is dict
