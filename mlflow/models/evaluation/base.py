@@ -2034,6 +2034,7 @@ def evaluate(
         original_predict = model.predict
 
         def monkey_patch_predict(x):
+            print("RUNNING PREDICT", x)
             # Override global autolog config for langchain
             global_autolog_config = AUTOLOGGING_INTEGRATIONS.get(mlflow.langchain.FLAVOR_NAME, {})
             mlflow.langchain.autolog(log_inputs_outputs=False, disable=False)
@@ -2118,7 +2119,7 @@ def evaluate(
                 feature_names=feature_names,
                 predictions=predictions,
             )
-        predictions_expected_in_model_output = predictions if model is None else None
+        predictions_expected_in_model_output = predictions if model is not None else None
 
         try:
             evaluate_result = _evaluate(

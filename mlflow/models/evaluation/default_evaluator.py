@@ -1876,36 +1876,36 @@ class DefaultEvaluator(ModelEvaluator):
             self.metrics_values = {}
             self.ordered_metrics = []
 
-            with mlflow.utils.autologging_utils.disable_autologging():
-                compute_latency = False
-                for extra_metric in self.extra_metrics:
-                    # If latency metric is specified, we will compute latency for the model
-                    # during prediction, and we will remove the metric from the list of extra
-                    # metrics to be computed after prediction.
-                    if extra_metric.name == _LATENCY_METRIC_NAME:
-                        compute_latency = True
-                        self.extra_metrics.remove(extra_metric)
-                        break
-                self._generate_model_predictions(compute_latency=compute_latency)
-                self._handle_builtin_metrics_by_model_type()
+            # with mlflow.utils.autologging_utils.disable_autologging():
+            compute_latency = False
+            for extra_metric in self.extra_metrics:
+                # If latency metric is specified, we will compute latency for the model
+                # during prediction, and we will remove the metric from the list of extra
+                # metrics to be computed after prediction.
+                if extra_metric.name == _LATENCY_METRIC_NAME:
+                    compute_latency = True
+                    self.extra_metrics.remove(extra_metric)
+                    break
+            self._generate_model_predictions(compute_latency=compute_latency)
+            self._handle_builtin_metrics_by_model_type()
 
-                eval_df = pd.DataFrame({"prediction": copy.deepcopy(self.y_pred)})
-                if self.dataset.has_targets:
-                    eval_df["target"] = self.y
+            eval_df = pd.DataFrame({"prediction": copy.deepcopy(self.y_pred)})
+            if self.dataset.has_targets:
+                eval_df["target"] = self.y
 
-                self._evaluate_metrics(eval_df)
-                if not is_baseline_model:
-                    self._log_custom_artifacts(eval_df)
+            self._evaluate_metrics(eval_df)
+            if not is_baseline_model:
+                self._log_custom_artifacts(eval_df)
 
-                self._add_prefix_to_metrics()
+            self._add_prefix_to_metrics()
 
-                if not is_baseline_model:
-                    self._log_artifacts()
-                    self._log_metrics()
-                    self._log_eval_table()
-                return EvaluationResult(
-                    metrics=self.aggregate_metrics, artifacts=self.artifacts, run_id=self.run_id
-                )
+            if not is_baseline_model:
+                self._log_artifacts()
+                self._log_metrics()
+                self._log_eval_table()
+            return EvaluationResult(
+                metrics=self.aggregate_metrics, artifacts=self.artifacts, run_id=self.run_id
+            )
 
     def evaluate(
         self,
@@ -2016,6 +2016,8 @@ class DefaultEvaluator(ModelEvaluator):
         else:
             if baseline_model:
                 _logger.info("Evaluating candidate model:")
+            
+            print("EVALUTING MODEL RESULT")
             evaluation_result = self._evaluate(model, is_baseline_model=False)
 
         if not baseline_model:
