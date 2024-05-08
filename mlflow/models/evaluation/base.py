@@ -1914,6 +1914,11 @@ def evaluate(
     from mlflow.pyfunc import PyFuncModel, _load_model_or_server, _ServedPyFuncModel
     from mlflow.utils import env_manager as _EnvManager
 
+    # Override global autolog config for langchain
+    global_autolog_config = AUTOLOGGING_INTEGRATIONS.get(mlflow.langchain.FLAVOR_NAME, {})
+    # Disable all autologging except for traces
+    mlflow.langchain.autolog(log_inputs_outputs=False)
+
     # Inference params are currently only supported for passing a deployment endpoint as the model.
     # TODO: We should support inference_params for other model types
 
@@ -2034,17 +2039,14 @@ def evaluate(
         original_predict = model.predict
 
         def monkey_patch_predict(x):
-            # Override global autolog config for langchain
-            global_autolog_config = AUTOLOGGING_INTEGRATIONS.get(mlflow.langchain.FLAVOR_NAME, {})
-            # Disable all autologging except for traces
-            mlflow.langchain.autolog(log_inputs_outputs=False)
-            print("TRACING GLOBAL_AUTOLOG_CONFIG", AUTOLOGGING_INTEGRATIONS.get(mlflow.langchain.FLAVOR_NAME, {}))
+            
+            # print("TRACING GLOBAL_AUTOLOG_CONFIG", AUTOLOGGING_INTEGRATIONS.get(mlflow.langchain.FLAVOR_NAME, {}))
             traced_predict = mlflow.trace(original_predict)
             result = traced_predict(x)
             print("RUNNING RESULTS OF PREDICT", x, result)
             # Restore global autolog config
-            mlflow.langchain.autolog(**global_autolog_config)
-            print("RESTORING")
+            # mlflow.langchain.autolog(**global_autolog_config)
+            # print("RESTORING")
             return result
         
         model.predict = monkey_patch_predict
