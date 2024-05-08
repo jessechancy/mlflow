@@ -2038,9 +2038,10 @@ def evaluate(
         def monkey_patch_predict(x):
             # Override global autolog config for langchain
             global_autolog_config = AUTOLOGGING_INTEGRATIONS.get(mlflow.langchain.FLAVOR_NAME, {})
+            mlflow.langchain.autolog(log_inputs_outputs=False, disable=False)
             # Disable all autologging except for traces
             print("TRACING GLOBAL_AUTOLOG_CONFIG", AUTOLOGGING_INTEGRATIONS.get(mlflow.langchain.FLAVOR_NAME, {}))
-            traced_predict = original_predict
+            traced_predict = mlflow.trace(original_predict)
             result = traced_predict(x)
             print("RUNNING RESULTS OF PREDICT", x, result)
             # Restore global autolog config

@@ -58,7 +58,7 @@ class MlflowSpanExporter(SpanExporter):
 
             # Add the trace to the in-memory buffer
             TRACE_BUFFER[trace.info.request_id] = trace
-
+            print("GOT TO TRACE BUFFER", TRACE_BUFFER)
             # if not maybe_get_evaluation_request_id():
             #     # Display the trace in the UI if the trace is not generated from within
             #     # an MLflow model evaluation context
