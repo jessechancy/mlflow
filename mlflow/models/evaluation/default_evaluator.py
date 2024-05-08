@@ -159,9 +159,10 @@ def _extract_predict_fn(model, raw_model):
         except ImportError:
             pass
 
-    predict_fn("random text")  # Ensure predict_fn is callable
-
-    return predict_fn, predict_proba_fn
+    def wrap_predict_fn(x):
+        print("RUNNING PREDICT FUNCTION\n")
+        return predict_fn(x)
+    return wrap_predict_fn, predict_proba_fn
 
 
 def _get_regressor_metrics(y, y_pred, sample_weights):
