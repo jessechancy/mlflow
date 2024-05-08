@@ -2028,28 +2028,28 @@ def evaluate(
             error_code=INVALID_PARAMETER_VALUE,
         )
     
-    # # Monkeypatch the predict method to log traces
-    # if model is not None and hasattr(model, "predict") and callable(model.predict):
-    #     # Store reference to original predict method to use in monkey patch
-    #     original_predict = model.predict
+    # Monkeypatch the predict method to log traces
+    if model is not None and hasattr(model, "predict") and callable(model.predict):
+        # Store reference to original predict method to use in monkey patch
+        original_predict = model.predict
 
-    #     mlflow.langchain.autolog(log_inputs_outputs=False, disable=False)
+        mlflow.langchain.autolog(log_inputs_outputs=False, disable=False)
 
-    #     def monkey_patch_predict(x):
-    #         # Override global autolog config for langchain
-    #         global_autolog_config = AUTOLOGGING_INTEGRATIONS.get(mlflow.langchain.FLAVOR_NAME, {})
-    #         mlflow.langchain.autolog(log_inputs_outputs=False, disable=False)
-    #         # Disable all autologging except for traces
-    #         print("TRACING GLOBAL_AUTOLOG_CONFIG", AUTOLOGGING_INTEGRATIONS.get(mlflow.langchain.FLAVOR_NAME, {}))
-    #         traced_predict = mlflow.trace(original_predict)
-    #         result = traced_predict(x)
-    #         print("RUNNING RESULTS OF PREDICT", x, result)
-    #         # Restore global autolog config
-    #         # mlflow.langchain.autolog(**global_autolog_config)
-    #         print("RESTORING")
-    #         return result
+        def monkey_patch_predict(x):
+            # Override global autolog config for langchain
+            global_autolog_config = AUTOLOGGING_INTEGRATIONS.get(mlflow.langchain.FLAVOR_NAME, {})
+            mlflow.langchain.autolog(log_inputs_outputs=False, disable=False)
+            # Disable all autologging except for traces
+            print("TRACING GLOBAL_AUTOLOG_CONFIG", AUTOLOGGING_INTEGRATIONS.get(mlflow.langchain.FLAVOR_NAME, {}))
+            traced_predict = mlflow.trace(original_predict)
+            result = traced_predict(x)
+            print("RUNNING RESULTS OF PREDICT", x, result)
+            # Restore global autolog config
+            # mlflow.langchain.autolog(**global_autolog_config)
+            print("RESTORING")
+            return result
         
-    #     model.predict = monkey_patch_predict
+        model.predict = monkey_patch_predict
 
     if validation_thresholds:
         try:
