@@ -33,6 +33,7 @@ from mlflow.tracking.artifact_utils import _download_artifact_from_uri
 from mlflow.tracking.client import MlflowClient
 from mlflow.utils import _get_fully_qualified_class_name, insecure_hash
 from mlflow.utils.annotations import developer_stable, experimental
+from mlflow.utils.autologging_utils import AUTOLOGGING_INTEGRATIONS
 from mlflow.utils.class_utils import _get_class_from_string
 from mlflow.utils.file_utils import TempDir
 from mlflow.utils.mlflow_tags import MLFLOW_DATASET_CONTEXT
@@ -2026,6 +2027,24 @@ def evaluate(
             "a function, or None.",
             error_code=INVALID_PARAMETER_VALUE,
         )
+    
+    # Monkeypatch the predict method to log traces
+    if model is not None and hasattr(model, "predict") and callable(model.predict):
+        # Store reference to original predict method to use in monkey patch
+        original_predict = model.predict
+
+        def monkey_patch_predict(x):
+            # Override global autolog config for langchain
+            global_autolog_config = AUTOLOGGING_INTEGRATIONS.get(mlflow.langchain.FLAVOR_NAME, {})
+            # Disable all autologging except for traces
+            mlflow.langchain.autolog(log_inputs_outputs=False)
+            traced_predict = mlflow.trace(original_predict)
+            result = traced_predict(x)
+            # Restore global autolog config
+            mlflow.langchain.autolog(**global_autolog_config)
+            return result
+        
+        model.predict = monkey_patch_predict
 
     if validation_thresholds:
         try:
