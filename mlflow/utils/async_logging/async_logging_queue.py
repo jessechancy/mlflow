@@ -227,6 +227,7 @@ class AsyncLoggingQueue:
 
         If the logging thread is already set up, this method does nothing.
         """
+        print("LOGGING THREAD SET UP", MLFLOW_ASYNC_LOGGING_THREADPOOL_SIZE.get() or 10)
         with self._lock:
             self._batch_logging_thread = threading.Thread(
                 target=self._logging_loop,
