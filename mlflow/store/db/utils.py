@@ -258,6 +258,7 @@ def create_sqlalchemy_engine(db_uri):
     echo = MLFLOW_SQLALCHEMYSTORE_ECHO.get()
     poolclass = MLFLOW_SQLALCHEMYSTORE_POOLCLASS.get()
     pool_kwargs = {}
+    print("POOL SIZE", pool_size)
     # Send argument only if they have been injected.
     # Some engine does not support them (for example sqllite)
     if pool_size:
