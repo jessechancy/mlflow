@@ -70,8 +70,8 @@ export const shouldEnableExperimentPageCompactHeader = () => shouldEnableDeepLea
 /**
  * Image grid charts feature
  */
-export const oss_shouldEnableImageGridCharts = () => true;
+export const shouldEnableImageGridCharts = () => true;
 /**
  * Log table images feature
  */
-export const oss_shouldEnableLogTableImages = () => true;
+export const shouldEnableLogTableImages = () => true;
