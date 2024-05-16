@@ -66,3 +66,12 @@ export const shouldEnableLoggedArtifactTableView = () => shouldEnableDeepLearnin
 
 // Determines if the compact header should be enabled on the experiment page.
 export const shouldEnableExperimentPageCompactHeader = () => shouldEnableDeepLearningUIPhase2();
+
+/**
+ * Image grid charts feature
+ */
+export const oss_shouldEnableImageGridCharts = () => true;
+/**
+ * Log table images feature
+ */
+export const oss_shouldEnableLogTableImages = () => true;
