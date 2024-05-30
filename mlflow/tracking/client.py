@@ -2332,7 +2332,8 @@ class MlflowClient:
                     image.save(tmp_path)
             else:
                 self._log_artifact_async_helper(run_id, image_filepath, image)
-
+            print("COMPRESSED FILEPATH", compressed_image_filepath)
+            print("UNCOMPRESSED FILEPATH", image_filepath)
             if synchronous:
                 with self._log_artifact_helper(run_id, compressed_image_filepath) as tmp_path:
                     compressed_image.save(tmp_path)
